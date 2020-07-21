@@ -1,5 +1,5 @@
 <template>
-  <div id="app">app</div>
+  <div id="app">炸鸡音乐</div>
 </template>
 
 <script>
@@ -8,4 +8,9 @@
   }
 </script>
 
-<style scoped lang="less"></style>
+<style scoped lang="less">
+  @import 'assets/css/variable';
+  div {
+    color: @color-theme;
+  }
+</style>
