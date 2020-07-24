@@ -2,7 +2,7 @@
   <div id="recommend">
     <!--轮播图-->
     <!--只有当有图片时才加载,此时的滚动距离一定是正确的-->
-    <swiper v-if="sliderImgList.length">
+    <swiper v-if="sliderImgList.length" :sliderImgList="sliderImgList">
       <swiper-item v-for="item in sliderImgList" :key="item.id">
         <a :href="item.linkUrl"><img :src="item.picUrl" alt=""/></a>
       </swiper-item>

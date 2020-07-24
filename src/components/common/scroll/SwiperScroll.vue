@@ -32,13 +32,18 @@
         bounce: false,
         stopPropagation: true,
         probeType: 2,
+        click: true,
       })
-      console.log(this.scroll.scrollerWidth)
+      this.scroll.on('slideWillChange', page => {
+        // 当页面滑动时传出当前页面页数
+        this.$emit('pageSlide', page.pageX)
+      })
     },
     methods: {
-      // 先判断this.scroll是否存在,以免在home父组件中调用方法时scroll还没创建
-      refresh() {
-        this.scroll && this.scroll.refresh()
+      autoPlay(time) {
+        if (this.scroll) {
+          return this.scroll.next(time)
+        }
       },
     },
   }
