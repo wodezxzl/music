@@ -1,14 +1,18 @@
 <template>
   <div id="recommend">
-    <!--轮播图-->
-    <!--只有当有图片时才加载,此时的滚动距离一定是正确的-->
-    <swiper v-if="sliderImgList.length" :sliderImgList="sliderImgList">
-      <swiper-item v-for="item in sliderImgList" :key="item.id">
-        <a :href="item.linkUrl"><img :src="item.picUrl" alt=""/></a>
-      </swiper-item>
-    </swiper>
-    <!--推荐歌单-->
-    <recommend-song-list />
+    <vertical-scroll class="scroll" ref="scroll" :data="songsList">
+      <!--轮播图-->
+      <!--只有当有图片时才加载,此时的滚动距离一定是正确的-->
+      <swiper v-if="sliderImgList.length" :sliderImgList="sliderImgList">
+        <swiper-item v-for="item in sliderImgList" :key="item.id">
+          <a :href="item.linkUrl"
+            ><img :src="item.picUrl" alt="" @load="imgLoad"
+          /></a>
+        </swiper-item>
+      </swiper>
+      <!--推荐歌单-->
+      <recommend-song-list :songsList="songsList" @minImgLoad="minImgLoad" />
+    </vertical-scroll>
   </div>
 </template>
 
@@ -18,9 +22,10 @@
 
   // 公共组件
   import { Swiper, SwiperItem } from 'components/common/swiper/index'
+  import VerticalScroll from 'components/common/scroll/VerticalScroll'
 
   // 网络请求
-  import { getRecommendSwiper } from '@/network/recommend'
+  import { getRecommendSwiper, getSongsList } from '@/network/recommend'
   import { ERR_OK } from '@/network/config'
 
   export default {
@@ -28,15 +33,20 @@
     data() {
       return {
         sliderImgList: [],
+        songsList: [],
+        // 是否已经加载完毕一张轮播图片
+        checkLoaded: false,
       }
     },
     components: {
       RecommendSongList,
       Swiper,
       SwiperItem,
+      VerticalScroll,
     },
     methods: {
       // 网络请求
+      // 1.轮播图图片
       _getRecommendSwiper() {
         getRecommendSwiper().then(res => {
           if (res.code === ERR_OK) {
@@ -44,12 +54,39 @@
           }
         })
       },
+      // 2.请求歌单列表
+      _getSongsList() {
+        getSongsList().then(res => {
+          if (res.data.code === ERR_OK) {
+            this.songsList = res.data.data.list
+          }
+        })
+      },
+      // 3.轮播图加载完毕一张就刷新高度
+      imgLoad() {
+        if (!this.checkLoaded) {
+          this.$refs.scroll.refresh()
+          this.checkLoaded = true
+        }
+      },
+      // 歌单列表中小图片加载完毕刷新高度
+      minImgLoad() {
+        this.$refs.scroll.refresh()
+      },
     },
     created() {
       // 1.请求轮播图数据
       this._getRecommendSwiper()
+      // 2.请求歌单列表
+      this._getSongsList()
     },
   }
 </script>
 
-<style scoped lang="less"></style>
+<style scoped lang="less">
+  #recommend {
+    .scroll {
+      height: calc(100vh - 88px);
+    }
+  }
+</style>

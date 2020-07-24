@@ -46,6 +46,13 @@
       // 挂载完毕设置定时器自动播放
       this.touchend()
     },
+    activated() {
+      this.touchend()
+    },
+    // 切到其他页面之后取消定时器
+    deactivated() {
+      clearInterval(this.timer)
+    },
     methods: {
       // 1.获取当前页面来改变小圆点样式
       pageSlide(currentPage) {
@@ -61,7 +68,7 @@
       touchend() {
         if (this.$refs.swiperScroll.autoPlay) {
           this.timer = setInterval(() => {
-            this.$refs.swiperScroll.autoPlay(1000)
+            this.$refs.swiperScroll.autoPlay(500)
           }, 4000)
         }
       },
