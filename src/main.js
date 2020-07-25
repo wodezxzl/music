@@ -12,7 +12,9 @@ import 'assets/css/index'
 // 解决移动端300ms延迟
 fastclick.attach(document.body)
 Vue.use(less)
-Vue.use(VuelazyLoad)
+Vue.use(VuelazyLoad, {
+  loading: require('assets/image/default.png'),
+})
 Vue.config.productionTip = false
 
 new Vue({

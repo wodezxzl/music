@@ -8,8 +8,11 @@
       </template>
     </nav-bar>
     <!--功能选项切换区-->
-    <tab-bar />
-    <router-view />
+    <tab-bar class="tab-bar"/>
+    <!--主要内容区-->
+    <keep-alive>
+      <router-view/>
+    </keep-alive>
   </div>
 </template>
 
@@ -41,10 +44,18 @@
         .bg-image('~assets/image/logo');
         background-size: 30px 32px;
       }
+
       .title {
         font-size: 18px;
         color: @color-theme;
       }
+    }
+
+    .tab-bar,
+    .nav-bar {
+      position: relative;
+      background-color: #000;
+      z-index: 999;
     }
   }
 </style>
