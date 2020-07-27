@@ -61,6 +61,13 @@
       refresh() {
         this.scroll && this.scroll.refresh()
       },
+      scrollTo(x = 0, y = 0, time = 100) {
+        y = -y
+        this.scroll && this.scroll.scrollTo(x, y, time)
+      },
+      scrollToElement(el, time = 100) {
+        this.scroll && this.scroll.scrollToElement(el, time)
+      },
     },
     watch: {
       // 观察到数据传进来就刷新(默认时间20为一般情况下vue挂载dom的耗时)

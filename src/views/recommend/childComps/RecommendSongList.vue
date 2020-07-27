@@ -2,12 +2,7 @@
   <div v-if="songsList.length" class="recommend-song-list">
     <h2>热门歌单推荐</h2>
     <ul>
-      <li
-        v-for="item in songsList"
-        :key="item.dissid"
-        class="list-item"
-        @click="itemClick"
-      >
+      <li v-for="item in songsList" :key="item.dissid" class="list-item">
         <img v-lazy="item.imgurl" alt="" @load="minImgLoad"/>
         <div class="desc">
           <div class="title" v-html="item.creator.name"></div>
@@ -57,7 +52,6 @@
       text-align: center;
       color: @color-theme;
     }
-
     .list-item {
       display: flex;
 

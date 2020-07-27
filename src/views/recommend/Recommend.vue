@@ -6,12 +6,16 @@
       <swiper v-if="sliderImgList.length" :sliderImgList="sliderImgList">
         <swiper-item v-for="item in sliderImgList" :key="item.id">
           <a :href="item.linkUrl"
-            ><img :src="item.picUrl" alt="" @load="imgLoad"
+          ><img :src="item.picUrl" alt="" @load="imgLoad"
           /></a>
         </swiper-item>
       </swiper>
       <!--推荐歌单-->
-      <recommend-song-list :songsList="songsList" @minImgLoad="minImgLoad" />
+      <recommend-song-list :songsList="songsList" @minImgLoad="minImgLoad"/>
+      <!--正在加载-->
+      <div v-show="!songsList.length" class="loading">
+        <loading/>
+      </div>
     </vertical-scroll>
   </div>
 </template>
@@ -23,6 +27,7 @@
   // 公共组件
   import { Swiper, SwiperItem } from 'components/common/swiper/index'
   import VerticalScroll from 'components/common/scroll/VerticalScroll'
+  import Loading from 'components/common/loading/Loading'
 
   // 网络请求
   import { getRecommendSwiper, getSongsList } from '@/network/recommend'
@@ -43,6 +48,7 @@
       Swiper,
       SwiperItem,
       VerticalScroll,
+      Loading,
     },
     methods: {
       // 网络请求
@@ -87,6 +93,13 @@
   #recommend {
     .scroll {
       height: calc(100vh - 88px);
+
+      .loading {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
     }
   }
 </style>
