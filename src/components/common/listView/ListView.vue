@@ -16,7 +16,12 @@
         >
           <h2 class="list-group-title">{{ group.title }}</h2>
           <ul>
-            <li class="list-item" v-for="item in group.items" :key="item.name">
+            <li
+              class="list-item"
+              v-for="item in group.items"
+              :key="item.name"
+              @click="itemClick(item)"
+            >
               <img v-lazy="item.avatar" alt="" @load="imgLoad"/>
               <span class="name">{{ item.name }}</span>
             </li>
@@ -108,6 +113,10 @@
             this.$emit('nowIndex', i + 1)
           }
         }
+      },
+      // 3.某一个歌手项被点击
+      itemClick(item) {
+        this.$emit('itemClick', item)
       },
 
       /**

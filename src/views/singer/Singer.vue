@@ -6,6 +6,7 @@
       :data="normalizedSinger"
       :anchorIndex="singerListIndex"
       @nowIndex="goToNowIndex"
+      @itemClick="singerItemClick"
     />
     <!--快速到达列表-->
     <div
@@ -24,6 +25,7 @@
         </li>
       </ul>
     </div>
+    <router-view/>
   </div>
 </template>
 
@@ -39,6 +41,9 @@
   import { HOT_NAME, HOT_SINGER_LEN } from '@/common/const'
   import Singer from '@/common/singer'
   import { getDOMData } from '@/common/utils'
+
+  // vuex
+  import { mapMutations } from 'vuex'
 
   const ANCHOR_HEIGHT = 18
 
@@ -173,6 +178,16 @@
       goToNowIndex(nowIndex) {
         this.anchorIndex = nowIndex
       },
+      // 4.歌手项被点击进行路由跳转,储存数据到vuex
+      singerItemClick(item) {
+        this.$router.push(`/singer/${item.id}`)
+        this.setSinger(item)
+      },
+
+      /**
+       * vuex
+       */
+      ...mapMutations(['setSinger']),
     },
   }
 </script>
@@ -181,10 +196,9 @@
   @import '~assets/css/variable';
 
   #singer {
-    position: fixed;
-    top: 88px;
-    bottom: 0;
+    height: calc(100vh - 88px);
     width: 100%;
+    z-index: -1;
 
     .list-shortcut {
       position: fixed;

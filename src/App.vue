@@ -17,8 +17,9 @@
 </template>
 
 <script>
-  import NavBar from 'components/common/navbar/NavBar'
-  import TabBar from 'components/common/tabbar/TabBar'
+  import NavBar from '@/components/common/navbar/NavBar'
+  import TabBar from '@/components/common/tabbar/TabBar'
+
   export default {
     name: 'App',
     components: {
@@ -55,7 +56,7 @@
     .nav-bar {
       position: relative;
       background-color: #000;
-      z-index: 999;
+      z-index: 1;
     }
   }
 </style>
