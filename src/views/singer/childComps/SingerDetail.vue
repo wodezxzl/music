@@ -1,14 +1,16 @@
 <template>
-  <transition name="slide">
-    <div class="singer-detail">
-      <music-list :title="title" :singerBgImage="singerBgImage"/>
-    </div>
+  <transition name="slide" appear>
+    <music-list
+      :title="title"
+      :singerBgImage="singerBgImage"
+      :songs="singerDetailList"
+    />
   </transition>
 </template>
 
 <script>
   // 公共组件
-  import MusicList from '@/components/content/MusicList'
+  import MusicList from '@/components/content/musicList/MusicList'
 
   // 网络请求
   import { getSingerDetail } from '@/network/singers'
