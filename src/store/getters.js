@@ -2,10 +2,10 @@ export const getters = {
   getSinger(state) {
     return state.singer
   },
-  getPlaying(state) {
+  isPlaying(state) {
     return state.playing
   },
-  getFullScreen(state) {
+  isFullScreen(state) {
     return state.fullScreen
   },
   getPlayList(state) {
@@ -21,6 +21,8 @@ export const getters = {
     return state.currentIndex
   },
   getCurrentSong(state) {
-    return state.playlist[state.currentIndex] || {}
+    if (state.currentIndex >= 0 && state.playList) {
+      return state.playList[state.currentIndex]
+    }
   },
 }

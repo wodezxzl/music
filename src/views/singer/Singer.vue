@@ -1,7 +1,7 @@
 <template>
   <div id="singer">
     <!--歌手列表-->
-    <list-view
+    <singer-list-view
       ref="listView"
       :data="normalizedSinger"
       :anchorIndex="singerListIndex"
@@ -31,7 +31,7 @@
 
 <script>
   // 子组件
-  import ListView from '@/components/common/listView/ListView'
+  import SingerListView from '@/components/content/singerListView/SingerListView'
 
   // 网络请求
   import { getSingerList } from '@/network/singers'
@@ -50,7 +50,7 @@
   export default {
     name: 'Singer',
     components: {
-      ListView,
+      SingerListView,
     },
     data() {
       return {

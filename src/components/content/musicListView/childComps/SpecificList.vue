@@ -1,7 +1,11 @@
 <template>
   <div class="song-list" v-show="songs.length">
     <ul>
-      <li v-for="item in songs" :key="item.id">
+      <li
+        v-for="(item, index) in songs"
+        :key="item.id"
+        @click="songClick(item, index)"
+      >
         <div class="song-name">{{ item.name }}</div>
         <div class="singer-name">{{ item.singer + '·' + item.album }}</div>
       </li>
@@ -18,6 +22,12 @@
         default() {
           return []
         },
+      },
+    },
+    methods: {
+      // 歌曲被点击进入播放器页面
+      songClick(item, index) {
+        this.$emit('songClick', item, index)
       },
     },
   }

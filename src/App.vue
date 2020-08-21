@@ -13,18 +13,22 @@
     <keep-alive>
       <router-view/>
     </keep-alive>
+    <!--播放器-->
+    <player></player>
   </div>
 </template>
 
 <script>
   import NavBar from '@/components/common/navbar/NavBar'
   import TabBar from '@/components/common/tabbar/TabBar'
+  import Player from '@/components/content/player/Player'
 
   export default {
     name: 'App',
     components: {
       NavBar,
       TabBar,
+      Player,
     },
   }
 </script>

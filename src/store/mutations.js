@@ -1,23 +1,34 @@
+import Vue from 'vue'
 export const mutations = {
   setSinger(state, singer) {
     state.singer = singer
   },
   setPlaying(state, flag) {
-    state.playing = flag
+    Vue.set(state, 'playing', flag)
   },
   setFullScreen(state, flag) {
-    state.fullScreen = flag
+    Vue.set(state, 'fullScreen', flag)
   },
   setPlayList(state, list) {
-    state.playList = list
+    // 直接赋值不具有响应式
+    Vue.set(state, 'playList', list)
+  },
+  // 设置真实的歌曲播放地址
+  setSongRealAddress(state, url) {
+    // 索引为0时需要判断一下
+    if (state.currentIndex === 0 || state.currentIndex) {
+      if (state.playList) {
+        Vue.set(state.playList[state.currentIndex], 'url', url)
+      }
+    }
   },
   setSequenceList(state, list) {
-    state.sequenceList = list
+    Vue.set(state, 'sequenceList', list)
   },
   setMode(state, mode) {
-    state.mode = mode
+    Vue.set(state, 'mode', mode)
   },
   setCurrentIndex(state, index) {
-    state.currentIndex = index
+    Vue.set(state, 'currentIndex', index)
   },
 }

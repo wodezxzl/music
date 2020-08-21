@@ -26,6 +26,17 @@ module.exports = {
           '^/api/getSongsList': '',
         },
       },
+      '/api/getSongUrl': {
+        target: 'https://u.y.qq.com/cgi-bin/musics.fcg',
+        changeOrigin: true,
+        bypass: function(req) {
+          req.headers.referer = 'https://y.qq.com/portal/player.html'
+          req.headers.origin = 'https://y.qq.com'
+        },
+        pathRewrite: {
+          '^/api/getSongUrl': '',
+        },
+      },
     },
   },
 }

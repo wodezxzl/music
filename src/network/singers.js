@@ -19,7 +19,7 @@ export function getSingerList() {
   return jsonp(url, data, options)
 }
 
-// 2.获取歌手详情数据
+// 2.获取歌手详情数据(他的歌曲列表信息)
 export function getSingerDetail(singerId) {
   const url = 'https://c.y.qq.com/v8/fcg-bin/fcg_v8_singer_track_cp.fcg'
 

@@ -1,6 +1,6 @@
 <template>
   <transition name="slide" appear>
-    <music-list
+    <music-list-view
       :title="title"
       :singerBgImage="singerBgImage"
       :songs="singerDetailList"
@@ -10,7 +10,7 @@
 
 <script>
   // 公共组件
-  import MusicList from '@/components/content/musicList/MusicList'
+  import MusicListView from '@/components/content/musicListView/MusicListView'
 
   // 网络请求
   import { getSingerDetail } from '@/network/singers'
@@ -74,6 +74,7 @@
         let rel = []
         list.forEach(item => {
           if (item.musicData.songid && item.musicData.albummid) {
+            // 直接使用创建函数,里面会根据song类来自己创建对象,没必要每次自己创建类写很多参数传进去
             rel.push(createSong(item.musicData))
           }
         })
@@ -81,7 +82,7 @@
       },
     },
     components: {
-      MusicList,
+      MusicListView,
     },
   }
 </script>

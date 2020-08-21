@@ -28,7 +28,7 @@
       :probeType="3"
       @scroll="scroll"
     >
-      <song-list :songs="songs"/>
+      <specific-list :songs="songs" @songClick="songClick"/>
     </vertical-scroll>
     <!--加载中图标-->
     <loading v-show="!songs.length" class="loading"/>
@@ -37,11 +37,18 @@
 
 <script>
   // 子组件
-  import SongList from './childComps/SongList'
+  import SpecificList from './childComps/SpecificList'
 
   //公共组件
   import VerticalScroll from '@/components/common/scroll/VerticalScroll'
   import Loading from '@/components/common/loading/Loading'
+
+  // 网络请求
+  import { getSongRealAddress } from '@/network/songs'
+  import { ERR_OK } from '@/network/config'
+
+  // vuex
+  import { mapActions } from 'vuex'
 
   export default {
     name: 'MusicList',
@@ -110,6 +117,11 @@
     },
     methods: {
       /**
+       * vuex
+       */
+      ...mapActions(['selectSongPlay']),
+
+      /**
        * 事件处理
        */
       // 1.监听滚动给scrollY赋值
@@ -119,6 +131,32 @@
       // 2.点击返回按钮,返回歌手页面
       backSinger() {
         this.$router.replace('/singer')
+      },
+      // 3.点击歌曲,进入播放器页面
+      // **同时加载对应歌曲的播放地址(用到时才加载不浪费资源)**
+      songClick(song, index) {
+        // vkey需要通过songmid得到
+        let songMid = this.songs[index].mid
+        // 获取歌曲播放地址信息
+        getSongRealAddress(songMid).then(res => {
+          // 整合的歌曲需要信息
+          if (res.data.code === ERR_OK && res.data.req_0.code === ERR_OK) {
+            let url = []
+            let baseUrl = res.data.req_0.data.sip
+            let pUrl = res.data.req_0.data.midurlinfo[0].purl
+            for (const item of baseUrl) {
+              let comP = item + pUrl
+              url.push(comP)
+            }
+            // 通过actions封装commit,一次提交多个信息
+            // 传过去的是整个歌曲列表,不是点击的这个歌曲项
+            this.selectSongPlay({
+              list: this.songs,
+              index,
+              url,
+            })
+          }
+        })
       },
 
       /**
@@ -172,7 +210,7 @@
       },
     },
     components: {
-      SongList,
+      SpecificList,
       VerticalScroll,
       Loading,
     },
