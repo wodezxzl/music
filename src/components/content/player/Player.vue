@@ -34,7 +34,7 @@
               v-if="getCurrentSong"
               ref="cdWrapper"
             >
-              <img :src="getCurrentSong.img" alt=""/>
+              <img :src="getCurrentSong.img" alt="" />
             </div>
           </div>
         </div>
@@ -57,7 +57,7 @@
       <div class="mini-player" v-show="!isFullScreen" @click="openFullScreen">
         <!--右边缩略图-->
         <div class="left-desc" v-if="getCurrentSong">
-          <img :src="getCurrentSong.img" alt=""/>
+          <img :src="getCurrentSong.img" :class="cdCls" alt="" />
           <div class="desc">
             <span v-html="getCurrentSong.name"></span>
             <span v-html="getCurrentSong.singer"></span>
@@ -74,7 +74,7 @@
     </transition>
     <!--audio标签播放-->
     <div v-if="getCurrentSong">
-      <audio :src="getCurrentSong.url" ref="audio"/>
+      <audio :src="getCurrentSong.url" ref="audio" />
     </div>
   </div>
 </template>
@@ -197,7 +197,7 @@
         const { x, y, scale } = this._getPosAndScale()
         this.$refs.cdWrapper.style[
           'transform'
-          ] = `translate3d(${x}px,${y}px,0) scale(${scale})`
+        ] = `translate3d(${x}px,${y}px,0) scale(${scale})`
         // 动画完成后需要调用done函数
         this.$refs.cdWrapper.addEventListener('transitionend', done)
       },
