@@ -28,10 +28,10 @@
       :probeType="3"
       @scroll="scroll"
     >
-      <specific-list :songs="songs" @songClick="songClick"/>
+      <specific-list :songs="songs" @songClick="songClick" />
     </vertical-scroll>
     <!--加载中图标-->
-    <loading v-show="!songs.length" class="loading"/>
+    <loading v-show="!songs.length" class="loading" />
   </div>
 </template>
 
@@ -48,7 +48,7 @@
   import { ERR_OK } from '@/network/config'
 
   // vuex
-  import { mapActions } from 'vuex'
+  import { mapActions, mapGetters } from 'vuex'
 
   export default {
     name: 'MusicList',
@@ -82,6 +82,7 @@
       }
     },
     computed: {
+      ...mapGetters(['getCurrentIndex']),
       bgImg() {
         return `background-image:url(${this.singerBgImage})`
       },
@@ -119,7 +120,7 @@
       /**
        * vuex
        */
-      ...mapActions(['selectSongPlay']),
+      ...mapActions(['selectSongPlay', 'isFullScreen']),
 
       /**
        * 事件处理
@@ -207,6 +208,13 @@
       // 滚动距离变化就计算出一个比例(因为上拉下拉都需要)
       scrollY() {
         this.percent = Math.abs(this.scrollY / this.baseUIHeight)
+      },
+      // CurrentIndex改变加载最新歌曲url
+      getCurrentIndex(newValue, oldValue) {
+        let res = newValue - oldValue
+        this.isFullScreen && Math.abs(res) === 1 && newValue !== 0
+          ? this.songClick(null, newValue)
+          : ''
       },
     },
     components: {

@@ -44,9 +44,9 @@
           <!--按钮区-->
           <div class="button">
             <i class="icon-random"></i>
-            <i class="icon-prev"></i>
+            <i class="icon-prev" @click="prev"></i>
             <i :class="playIcon" @click="togglePlaying"></i>
-            <i class="icon-next"></i>
+            <i class="icon-next" @click="next"></i>
             <i class="icon-not-favorite"></i>
           </div>
         </div>
@@ -73,7 +73,7 @@
       </div>
     </transition>
     <!--audio标签播放-->
-    <div v-if="getCurrentSong">
+    <div v-if="getCurrentSong && getCurrentSong.url">
       <audio :src="getCurrentSong.url" ref="audio" />
     </div>
   </div>
@@ -94,7 +94,16 @@
         'isFullScreen',
         'getCurrentSong',
         'getPlayList',
+        'getCurrentIndex',
       ]),
+      // 0.切换歌曲的得到的新url
+      // **直接判断getCurrentSong的变化来播放歌曲不行(在上一首下一首时)
+      newUrl() {
+        if (this.getCurrentSong && this.getCurrentSong.url) {
+          return this.getCurrentSong.url
+        }
+        return null
+      },
       // 1.设置背景图片
       bgImg() {
         return `backgroundImage: url(${this.getCurrentSong.img})`
@@ -109,14 +118,14 @@
       },
       // 4.cd旋转动画样式
       cdCls() {
-        return this.isPlaying ? 'play' : 'play pause'
+        return this.isPlaying ? 'play-rotate' : 'play-rotate pause-rotate'
       },
     },
     methods: {
       /**
        *vuex
        */
-      ...mapMutations(['setFullScreen', 'setPlaying']),
+      ...mapMutations(['setFullScreen', 'setPlaying', 'setCurrentIndex']),
 
       /**
        * 事件处理
@@ -133,6 +142,22 @@
       togglePlaying() {
         // 先把state中保存的播放状态设置正确
         this.setPlaying(!this.isPlaying)
+      },
+      // 4.点击上一曲
+      prev() {
+        let index = this.getCurrentIndex - 1
+        if (index === -1) {
+          index = this.getCurrentIndex.length - 1
+        }
+        this.setCurrentIndex(index)
+      },
+      // 5.点击下一曲
+      next() {
+        let index = this.getCurrentIndex + 1
+        if (index === this.getCurrentIndex.length) {
+          index = 0
+        }
+        this.setCurrentIndex(index)
       },
 
       /**
@@ -209,17 +234,19 @@
     },
     watch: {
       // 1.getCurrentSong变化时说明有值了,可以播放了,调用audio的方法来播放音乐
-      getCurrentSong() {
+      newUrl(newValue) {
         // TODO $nextTick的作用还不是很了解
         this.$nextTick(() => {
-          this.$refs.audio.play()
+          newValue ? this.$refs.audio.play() : console.log(1)
         })
       },
       // 2.记录播放状态的数据变化,改变播放状态
       isPlaying(newValue) {
         this.$nextTick(() => {
-          const audio = this.$refs.audio
-          newValue ? audio.play() : audio.pause()
+          if (this.$refs.audio) {
+            const audio = this.$refs.audio
+            newValue ? audio.play() : audio.pause()
+          }
         })
       },
     },
@@ -417,7 +444,6 @@
       }
 
       /*动画*/
-
       &.mini-enter-active,
       &.mini-leave-active {
         transition: all 0.4s;
@@ -428,16 +454,18 @@
         opacity: 0;
       }
     }
+
+    /*cd旋转动画*/
+    // **这里动画样式不能写在外面,会与播放器展开收缩冲突
+    /*.play-rotate {
+      animation: rotateAnimation 20s linear infinite;
+    }
+    .pause-rotate {
+      animation-play-state: paused;
+    }*/
   }
 
-  /*cd旋转动画*/
-  .play {
-    animation: rotate 20s linear infinite;
-  }
-  .pause {
-    animation-play-state: paused;
-  }
-  @keyframes rotate {
+  @keyframes rotateAnimation {
     0% {
       transform: rotate(0);
     }
