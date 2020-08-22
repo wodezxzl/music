@@ -240,7 +240,6 @@
       background-color: #000;
       overflow: hidden;
       /*背景图片*/
-
       .bg-img {
         position: absolute;
         top: -5%;
@@ -255,7 +254,6 @@
       }
 
       /*顶栏返回和歌曲信息*/
-
       .top-layer {
         .back {
           display: inline-block;
@@ -290,7 +288,6 @@
       }
 
       /*中间区域*/
-
       .middle {
         position: fixed;
         top: 100px;
@@ -313,15 +310,6 @@
             border: 10px solid @color-dialog-background;
             box-sizing: border-box;
             overflow: hidden;
-
-            &.play {
-              animation: rotate 20s linear infinite;
-            }
-
-            &.pause {
-              animation-play-state: paused;
-            }
-
             img {
               width: 100%;
               height: 100%;
@@ -331,7 +319,6 @@
       }
 
       /*底部播放区*/
-
       .player-layer {
         position: absolute;
         bottom: 50px;
@@ -352,7 +339,6 @@
       }
 
       /*动画*/
-
       &.normal-enter-active,
       &.normal-leave-active {
         transition: all 0.4s;
@@ -445,6 +431,12 @@
   }
 
   /*cd旋转动画*/
+  .play {
+    animation: rotate 20s linear infinite;
+  }
+  .pause {
+    animation-play-state: paused;
+  }
   @keyframes rotate {
     0% {
       transform: rotate(0);
