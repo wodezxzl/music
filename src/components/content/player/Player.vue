@@ -1,5 +1,5 @@
 <template>
-  <div class="player" v-show="isPlaying">
+  <div class="player" v-show="getPlayList.length > 0">
     <!--展开全屏播放器-->
     <transition
       name="normal"
@@ -28,7 +28,12 @@
           <!--cd图片区-->
           <div class="cd-wrapper">
             <!--**这里用v-show会报错**-->
-            <div class="cd" v-if="getCurrentSong" ref="cdWrapper">
+            <div
+              class="cd"
+              :class="cdCls"
+              v-if="getCurrentSong"
+              ref="cdWrapper"
+            >
               <img :src="getCurrentSong.img" alt=""/>
             </div>
           </div>
@@ -40,7 +45,7 @@
           <div class="button">
             <i class="icon-random"></i>
             <i class="icon-prev"></i>
-            <i class="icon-play"></i>
+            <i :class="playIcon" @click="togglePlaying"></i>
             <i class="icon-next"></i>
             <i class="icon-not-favorite"></i>
           </div>
@@ -50,7 +55,7 @@
     <!--缩小小播放器-->
     <transition name="mini">
       <div class="mini-player" v-show="!isFullScreen" @click="openFullScreen">
-        <!--右边-->
+        <!--右边缩略图-->
         <div class="left-desc" v-if="getCurrentSong">
           <img :src="getCurrentSong.img" alt=""/>
           <div class="desc">
@@ -59,9 +64,10 @@
           </div>
         </div>
 
-        <!--左边-->
+        <!--左边按钮-->
         <div class="right-button">
-          <i class="icon-play-mini"></i>
+          <!--这里要阻止冒泡,因为父级也有点击事件-->
+          <i @click.stop="togglePlaying" :class="playMiniIcon"></i>
           <i class="icon-playlist"></i>
         </div>
       </div>
@@ -83,17 +89,34 @@
   export default {
     name: 'Player',
     computed: {
-      ...mapGetters(['isPlaying', 'isFullScreen', 'getCurrentSong']),
+      ...mapGetters([
+        'isPlaying',
+        'isFullScreen',
+        'getCurrentSong',
+        'getPlayList',
+      ]),
       // 1.设置背景图片
       bgImg() {
         return `backgroundImage: url(${this.getCurrentSong.img})`
+      },
+      // 2.根据播放状态改变全屏按钮样式
+      playIcon() {
+        return this.isPlaying ? 'icon-pause' : 'icon-play'
+      },
+      // 3.根据播放状态改变小屏按钮样式
+      playMiniIcon() {
+        return this.isPlaying ? 'icon-pause-mini' : 'icon-play-mini'
+      },
+      // 4.cd旋转动画样式
+      cdCls() {
+        return this.isPlaying ? 'play' : 'play pause'
       },
     },
     methods: {
       /**
        *vuex
        */
-      ...mapMutations(['setFullScreen']),
+      ...mapMutations(['setFullScreen', 'setPlaying']),
 
       /**
        * 事件处理
@@ -105,6 +128,11 @@
       // 2.点击小播放器显示全屏播放器
       openFullScreen() {
         this.setFullScreen(true)
+      },
+      // 3.点击播放和暂停按钮时保存状态
+      togglePlaying() {
+        // 先把state中保存的播放状态设置正确
+        this.setPlaying(!this.isPlaying)
       },
 
       /**
@@ -180,11 +208,18 @@
       },
     },
     watch: {
-      // 1.getCurrentSong变化时说明有值了,可以播放了
+      // 1.getCurrentSong变化时说明有值了,可以播放了,调用audio的方法来播放音乐
       getCurrentSong() {
         // TODO $nextTick的作用还不是很了解
         this.$nextTick(() => {
-          // this.$refs.audio.play()
+          this.$refs.audio.play()
+        })
+      },
+      // 2.记录播放状态的数据变化,改变播放状态
+      isPlaying(newValue) {
+        this.$nextTick(() => {
+          const audio = this.$refs.audio
+          newValue ? audio.play() : audio.pause()
         })
       },
     },
@@ -278,6 +313,14 @@
             border: 10px solid @color-dialog-background;
             box-sizing: border-box;
             overflow: hidden;
+
+            &.play {
+              animation: rotate 20s linear infinite;
+            }
+
+            &.pause {
+              animation-play-state: paused;
+            }
 
             img {
               width: 100%;
@@ -398,6 +441,16 @@
       &.mini-leave-to {
         opacity: 0;
       }
+    }
+  }
+
+  /*cd旋转动画*/
+  @keyframes rotate {
+    0% {
+      transform: rotate(0);
+    }
+    100% {
+      transform: rotate(360deg);
     }
   }
 </style>
