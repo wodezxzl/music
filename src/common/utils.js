@@ -27,3 +27,15 @@ export const playMode = {
   loop: 2,
   random: 3,
 }
+
+// 4.格式化时间戳
+export function formatTime(time) {
+  // 向下取整
+  time = time | 0
+  let minute = '0' + ((time / 60) | 0)
+  let second = time % 60 | 0
+  if (second < 10) {
+    second = '0' + second
+  }
+  return `${minute}:${second}`
+}

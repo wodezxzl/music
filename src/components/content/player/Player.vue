@@ -37,6 +37,12 @@
 
         <!--底部播放选项区-->
         <div class="player-layer">
+          <!--进度条-->
+          <div class="progress-wrapper">
+            <span class="time time-l">{{ songPlayedTime }}</span>
+            <div class="progress-bar-wrapper"></div>
+            <span class="time time-r">{{ songTotalTime }}</span>
+          </div>
           <!--按钮区-->
           <div class="button">
             <i class="icon-random"></i>
@@ -70,7 +76,13 @@
     </transition>
     <!--audio标签播放-->
     <div v-if="getCurrentSong && getCurrentSong.url">
-      <audio :src="getCurrentSong.url" ref="audio" @canplay="ready" @error="error" />
+      <audio
+        :src="getCurrentSong.url"
+        ref="audio"
+        @canplay="ready"
+        @error="error"
+        @timeupdate="updateTime"
+      />
     </div>
   </div>
 </template>
@@ -78,6 +90,7 @@
 <script>
   // 公共资源
   import animations from 'create-keyframe-animation'
+  import { formatTime } from '@/common/utils'
 
   // vuex
   import { mapGetters, mapMutations } from 'vuex'
@@ -87,6 +100,7 @@
     data() {
       return {
         songReady: false,
+        currentTime: 0,
       }
     },
     computed: {
@@ -124,6 +138,16 @@
       // 5.songReady为false时上下曲的图标样式
       disableCls() {
         return this.songReady ? '' : 'disableCls'
+      },
+      // 6.歌曲已经播放时间
+      songPlayedTime() {
+        return formatTime(this.currentTime)
+      },
+      // 7.歌曲总时间
+      songTotalTime() {
+        return this.getCurrentSong
+          ? formatTime(this.getCurrentSong.duration)
+          : '00:00'
       },
     },
     methods: {
@@ -178,6 +202,11 @@
       error() {
         // 发生错误后也能下一曲和上一曲切换
         this.songReady = true
+      },
+      // 8.歌曲播放时会触发事件updateTime
+      updateTime(e) {
+        // 事件对象里面的currentTime可读写
+        this.currentTime = e.target.currentTime
       },
 
       /**
