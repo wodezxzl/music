@@ -40,7 +40,9 @@
           <!--进度条-->
           <div class="progress-wrapper">
             <span class="time time-l">{{ songPlayedTime }}</span>
-            <div class="progress-bar-wrapper"></div>
+            <div class="progress-bar-wrapper">
+              <progress-bar :percent="percent" @percentChange="percentChange"/>
+            </div>
             <span class="time time-r">{{ songTotalTime }}</span>
           </div>
           <!--按钮区-->
@@ -68,8 +70,15 @@
 
         <!--左边按钮-->
         <div class="right-button">
-          <!--这里要阻止冒泡,因为父级也有点击事件-->
-          <i @click.stop="togglePlaying" :class="playMiniIcon"></i>
+          <!--圆形播放进度条-->
+          <progress-circle :radius="radius" :percent="percent">
+            <!--这里要阻止冒泡,因为父级也有点击事件-->
+            <i
+              @click.stop="togglePlaying"
+              class="icon-mini"
+              :class="playMiniIcon"
+            ></i>
+          </progress-circle>
           <i class="icon-playlist"></i>
         </div>
       </div>
@@ -88,6 +97,10 @@
 </template>
 
 <script>
+  // 公共组件
+  import ProgressBar from './ProgressBar'
+  import ProgressCircle from './ProgressCircle'
+
   // 公共资源
   import animations from 'create-keyframe-animation'
   import { formatTime } from '@/common/utils'
@@ -101,6 +114,7 @@
       return {
         songReady: false,
         currentTime: 0,
+        radius: 34,
       }
     },
     computed: {
@@ -148,6 +162,12 @@
         return this.getCurrentSong
           ? formatTime(this.getCurrentSong.duration)
           : '00:00'
+      },
+      // 8.已播放量的百分比
+      percent() {
+        return this.getCurrentSong
+          ? this.currentTime / this.getCurrentSong.duration
+          : 0
       },
     },
     methods: {
@@ -207,6 +227,14 @@
       updateTime(e) {
         // 事件对象里面的currentTime可读写
         this.currentTime = e.target.currentTime
+      },
+      // 9.进度条拖动后传出事件,重新设置播放进度
+      percentChange(percent) {
+        this.$refs.audio.currentTime = this.getCurrentSong.duration * percent
+        // 如果当前是暂停状态,拖动切换为播放状态
+        if (!this.isPlaying) {
+          this.togglePlaying()
+        }
       },
 
       /**
@@ -298,6 +326,10 @@
           }
         })
       },
+    },
+    components: {
+      ProgressBar,
+      ProgressCircle,
     },
   }
 </script>
@@ -399,6 +431,32 @@
         position: absolute;
         bottom: 50px;
         width: 100%;
+        /*进度条*/
+
+        .progress-wrapper {
+          display: flex;
+          align-items: center;
+          padding: 20px 40px;
+
+          .progress-bar-wrapper {
+            flex: 1;
+          }
+
+          .time {
+            flex: 0 0 40px;
+            font-size: 12px;
+          }
+
+          .time-l {
+            text-align: left;
+          }
+
+          .time-r {
+            text-align: right;
+          }
+        }
+
+        /*按钮*/
 
         .button {
           display: flex;
@@ -484,8 +542,14 @@
         display: flex;
         align-items: center;
         margin-right: 10px;
-        color: @color-theme;
+        color: @color-theme-d;
         font-size: 34px;
+
+        .icon-mini {
+          position: absolute;
+          left: -10px;
+          top: 1px;
+        }
 
         i {
           margin: 0 10px;
