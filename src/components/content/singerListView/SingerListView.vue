@@ -22,7 +22,7 @@
               :key="item.name"
               @click="itemClick(item)"
             >
-              <img v-lazy="item.avatar" alt="" @load="imgLoad"/>
+              <img v-lazy="item.avatar" alt="" @load="imgLoad" />
               <span class="name">{{ item.name }}</span>
             </li>
           </ul>
@@ -166,9 +166,10 @@
 
   .list-view {
     height: 100%;
+    overflow: hidden;
 
     .list-view-scroll {
-      height: 100%;
+      height: calc(100vh - 88px);
 
       .list-group {
         padding-bottom: 30px;

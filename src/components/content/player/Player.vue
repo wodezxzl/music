@@ -28,13 +28,9 @@
           <!--cd图片区-->
           <div class="cd-wrapper">
             <!--**这里用v-show会报错**-->
-            <div
-              class="cd"
-              :class="cdCls"
-              v-if="getCurrentSong"
-              ref="cdWrapper"
-            >
-              <img :src="getCurrentSong.img" alt="" />
+            <div class="cd" v-if="getCurrentSong" ref="cdWrapper">
+              <!--这个cdCls中的动画不能和父级动画放在一起-->
+              <img :src="getCurrentSong.img" :class="cdCls" alt="" />
             </div>
           </div>
         </div>
@@ -44,9 +40,9 @@
           <!--按钮区-->
           <div class="button">
             <i class="icon-random"></i>
-            <i class="icon-prev" @click="prev"></i>
-            <i :class="playIcon" @click="togglePlaying"></i>
-            <i class="icon-next" @click="next"></i>
+            <i class="icon-prev" :class="disableCls" @click="prev"></i>
+            <i :class="[playIcon, disableCls]" @click="togglePlaying"></i>
+            <i class="icon-next" :class="disableCls" @click="next"></i>
             <i class="icon-not-favorite"></i>
           </div>
         </div>
@@ -74,7 +70,7 @@
     </transition>
     <!--audio标签播放-->
     <div v-if="getCurrentSong && getCurrentSong.url">
-      <audio :src="getCurrentSong.url" ref="audio" />
+      <audio :src="getCurrentSong.url" ref="audio" @canplay="ready" @error="error" />
     </div>
   </div>
 </template>
@@ -88,6 +84,11 @@
 
   export default {
     name: 'Player',
+    data() {
+      return {
+        songReady: false,
+      }
+    },
     computed: {
       ...mapGetters([
         'isPlaying',
@@ -120,6 +121,10 @@
       cdCls() {
         return this.isPlaying ? 'play-rotate' : 'play-rotate pause-rotate'
       },
+      // 5.songReady为false时上下曲的图标样式
+      disableCls() {
+        return this.songReady ? '' : 'disableCls'
+      },
     },
     methods: {
       /**
@@ -145,19 +150,34 @@
       },
       // 4.点击上一曲
       prev() {
+        // 还不能播放时不进行后续操作
+        if (!this.songReady) return
         let index = this.getCurrentIndex - 1
         if (index === -1) {
           index = this.getCurrentIndex.length - 1
         }
         this.setCurrentIndex(index)
+        // 点击之后恢复
+        this.songReady = false
       },
       // 5.点击下一曲
       next() {
+        if (!this.songReady) return
         let index = this.getCurrentIndex + 1
         if (index === this.getCurrentIndex.length) {
           index = 0
         }
         this.setCurrentIndex(index)
+        this.songReady = false
+      },
+      // 6.audio可以播放时触发该canplay事件
+      ready() {
+        this.songReady = true
+      },
+      // 7.歌曲播放失败触发函数
+      error() {
+        // 发生错误后也能下一曲和上一曲切换
+        this.songReady = true
       },
 
       /**
@@ -237,7 +257,7 @@
       newUrl(newValue) {
         // TODO $nextTick的作用还不是很了解
         this.$nextTick(() => {
-          newValue ? this.$refs.audio.play() : console.log(1)
+          newValue ? this.$refs.audio.play() : ''
         })
       },
       // 2.记录播放状态的数据变化,改变播放状态
@@ -258,7 +278,7 @@
 
   .player {
     .normal-player {
-      position: absolute;
+      position: fixed;
       top: 0;
       bottom: 0;
       left: 0;
@@ -457,12 +477,12 @@
 
     /*cd旋转动画*/
     // **这里动画样式不能写在外面,会与播放器展开收缩冲突
-    /*.play-rotate {
+    .play-rotate {
       animation: rotateAnimation 20s linear infinite;
     }
     .pause-rotate {
       animation-play-state: paused;
-    }*/
+    }
   }
 
   @keyframes rotateAnimation {

@@ -1,17 +1,17 @@
 <template>
   <div id="app">
     <!--顶栏图标标题区-->
-    <nav-bar class="nav-bar">
+    <nav-bar class="app-nav-bar">
       <template v-slot:center>
         <span class="icon"></span>
         <span class="title">Chicken Music</span>
       </template>
     </nav-bar>
     <!--功能选项切换区-->
-    <tab-bar class="tab-bar"/>
+    <tab-bar class="app-tab-bar" />
     <!--主要内容区-->
     <keep-alive>
-      <router-view/>
+      <router-view />
     </keep-alive>
     <!--播放器-->
     <player></player>
@@ -38,7 +38,7 @@
   @import 'assets/css/variable';
   #app {
     /*顶栏*/
-    .nav-bar {
+    .app-nav-bar {
       .icon {
         display: inline-block;
         margin-top: 6px;
@@ -56,8 +56,8 @@
       }
     }
 
-    .tab-bar,
-    .nav-bar {
+    .app-tab-bar,
+    .app-nav-bar {
       position: relative;
       background-color: #000;
       z-index: 1;

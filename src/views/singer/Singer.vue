@@ -25,7 +25,7 @@
         </li>
       </ul>
     </div>
-    <router-view/>
+    <router-view />
   </div>
 </template>
 
@@ -196,9 +196,12 @@
   @import '~assets/css/variable';
 
   #singer {
-    height: calc(100vh - 88px);
-    width: 100%;
-    z-index: -1;
+    position: fixed;
+    top: 88px;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    overflow: hidden;
 
     .list-shortcut {
       position: fixed;
