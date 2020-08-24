@@ -24,8 +24,8 @@ export function getDOMData(el, name, val) {
 // 3.播放模式
 export const playMode = {
   sequence: 0,
-  loop: 2,
-  random: 3,
+  loop: 1,
+  random: 2,
 }
 
 // 4.格式化时间戳
@@ -38,4 +38,21 @@ export function formatTime(time) {
     second = '0' + second
   }
   return `${minute}:${second}`
+}
+
+// 获取随机数
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
+// 5.洗牌函数
+export function shuffle(arr) {
+  // 从0到当前序号获取一个随机下标,交换该下标和当前i对应值
+  for (let i = 0; i < arr.length; i++) {
+    let j = getRandomInt(0, i)
+    let t = arr[i]
+    arr[i] = arr[j]
+    arr[j] = t
+  }
+  return arr
 }

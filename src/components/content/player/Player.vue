@@ -47,7 +47,7 @@
           </div>
           <!--按钮区-->
           <div class="button">
-            <i class="icon-random"></i>
+            <i :class="iconMode" @click="changeMode"></i>
             <i class="icon-prev" :class="disableCls" @click="prev"></i>
             <i :class="[playIcon, disableCls]" @click="togglePlaying"></i>
             <i class="icon-next" :class="disableCls" @click="next"></i>
@@ -91,6 +91,7 @@
         @canplay="ready"
         @error="error"
         @timeupdate="updateTime"
+        @ended="songEnd"
       />
     </div>
   </div>
@@ -104,6 +105,8 @@
   // 公共资源
   import animations from 'create-keyframe-animation'
   import { formatTime } from '@/common/utils'
+  import { playMode } from '@/common/utils'
+  import { shuffle } from '@/common/utils'
 
   // vuex
   import { mapGetters, mapMutations } from 'vuex'
@@ -124,6 +127,8 @@
         'getCurrentSong',
         'getPlayList',
         'getCurrentIndex',
+        'getMode',
+        'getSequenceList',
       ]),
       // 0.切换歌曲的得到的新url
       // **直接判断getCurrentSong的变化来播放歌曲不行(在上一首下一首时)
@@ -169,12 +174,26 @@
           ? this.currentTime / this.getCurrentSong.duration
           : 0
       },
+      // 9.播放模式
+      iconMode() {
+        return this.getMode === playMode.sequence
+          ? 'icon-sequence'
+          : this.getMode === playMode.loop
+            ? 'icon-loop'
+            : 'icon-random'
+      },
     },
     methods: {
       /**
        *vuex
        */
-      ...mapMutations(['setFullScreen', 'setPlaying', 'setCurrentIndex']),
+      ...mapMutations([
+        'setFullScreen',
+        'setPlaying',
+        'setCurrentIndex',
+        'setMode',
+        'setPlayList',
+      ]),
 
       /**
        * 事件处理
@@ -236,6 +255,33 @@
           this.togglePlaying()
         }
       },
+      // 10.改变播放模式和修改播放列表
+      changeMode() {
+        let mode = this.getMode < 2 ? this.getMode + 1 : 0
+        this.setMode(mode)
+        let list = null
+        if (mode === playMode.random) {
+          list = shuffle(this.getSequenceList)
+        } else {
+          // 顺序播放和循环播放,列表不变
+          list = this.getSequenceList
+        }
+        // 为了保证切换模式时当前播放歌曲不变,先将当前歌曲在新列表中的位置重置
+        // 当下一步改变新列表后当前播放歌曲不会变化
+        this._resetCurrentSong(list)
+        // 设置当前播放列表
+        this.setPlayList(list)
+      },
+      // 11.歌曲播放完毕触发函数
+      songEnd() {
+        if (this.getMode === playMode.loop) {
+          // 播放完毕,单曲循环时执行loop函数
+          this._loop()
+        } else {
+          // 另外两种模式下一曲就行
+          this.next()
+        }
+      },
 
       /**
        *私有方法
@@ -255,6 +301,18 @@
           y,
           scale,
         }
+      },
+      // 2.重置当前播放歌曲
+      _resetCurrentSong(list) {
+        let index = list.findIndex(item => {
+          return item.id === this.getCurrentSong.id
+        })
+        this.setCurrentIndex(index)
+      },
+      // 3.歌曲循环播放实现
+      _loop() {
+        this.$refs.audio.currentTime = 0
+        this.$refs.audio.play()
       },
 
       /**
