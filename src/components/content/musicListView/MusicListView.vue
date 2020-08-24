@@ -16,7 +16,7 @@
           class="random-play"
           ref="randomPlay"
           v-show="songs.length"
-          @click="playRandomSong"
+          @click="randomPlay"
         >
           <i class="icon-play"></i>
           <span>随机播放全部</span>
@@ -48,14 +48,14 @@
   import VerticalScroll from '@/components/common/scroll/VerticalScroll'
   import Loading from '@/components/common/loading/Loading'
 
-  // 网络请求
-  import { getSongRealAddress } from '@/network/songs'
-  import { ERR_OK } from '@/network/config'
-
   // vuex
   import { mapActions, mapGetters } from 'vuex'
 
+  // mixin
+  import { playlistMixin } from '@/common/mixin'
+
   export default {
+    mixins: [playlistMixin],
     name: 'MusicList',
     props: {
       // 1.歌手背景图
@@ -141,35 +141,22 @@
       // 3.点击歌曲,进入播放器页面
       // **同时加载对应歌曲的播放地址(用到时才加载不浪费资源)**
       songClick(song, index) {
-        // vkey需要通过songmid得到
-        let songMid = this.songs[index].mid
-        // 获取歌曲播放地址信息
-        getSongRealAddress(songMid).then(res => {
-          // 整合的歌曲需要信息
-          if (res.data.code === ERR_OK && res.data.req_0.code === ERR_OK) {
-            let url = []
-            let baseUrl = res.data.req_0.data.sip
-            let pUrl = res.data.req_0.data.midurlinfo[0].purl
-            for (const item of baseUrl) {
-              let comP = item + pUrl
-              url.push(comP)
-            }
-            // 通过actions封装commit,一次提交多个信息
-            // 传过去的是整个歌曲列表,不是点击的这个歌曲项
-            this.selectSongPlay({
-              list: this.songs,
-              index,
-              url,
-            })
-          }
+        this.selectSongPlay({
+          list: this.songs,
+          index,
         })
       },
       // 4.随机播放歌曲
-      // TODO 有问题的,没有url
-      playRandomSong() {
+      randomPlay() {
         this.playRandomSong({
           list: this.songs,
         })
+      },
+      // 5.操作scroll,不让mini播放器遮盖
+      handlePlaylist(playlist) {
+        // 设置滚动组件的bottom为mini播放器的高度
+        this.$refs.cScroll.$el.style.bottom = playlist.length > 0 ? '60px' : ''
+        this.$refs.cScroll.refresh()
       },
 
       /**
@@ -220,13 +207,6 @@
       // 滚动距离变化就计算出一个比例(因为上拉下拉都需要)
       scrollY() {
         this.percent = Math.abs(this.scrollY / this.baseUIHeight)
-      },
-      // CurrentIndex改变加载最新歌曲url
-      getCurrentIndex(newValue, oldValue) {
-        let res = newValue - oldValue
-        this.isFullScreen && Math.abs(res) === 1 && newValue !== 0
-          ? this.songClick(null, newValue)
-          : ''
       },
     },
     components: {

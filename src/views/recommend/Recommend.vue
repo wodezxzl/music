@@ -1,5 +1,5 @@
 <template>
-  <div id="recommend">
+  <div id="recommend" ref="recommend">
     <vertical-scroll class="scroll" ref="scroll" :data="songsList">
       <!--轮播图-->
       <!--只有当有图片时才加载,此时的滚动距离一定是正确的-->
@@ -33,7 +33,11 @@
   import { getRecommendSwiper, getSongsList } from '@/network/recommend'
   import { ERR_OK } from '@/network/config'
 
+  // mixin
+  import { playlistMixin } from '@/common/mixin'
+
   export default {
+    mixins: [playlistMixin],
     name: 'Recommend',
     data() {
       return {
@@ -75,6 +79,12 @@
           this.checkLoaded = true
         }
       },
+      // 4.操作scroll,不让mini播放器遮盖
+      handlePlaylist(playlist) {
+        // 设置滚动组件的bottom为mini播放器的高度
+        this.$refs.recommend.style.bottom = playlist.length > 0 ? '60px' : ''
+        this.$refs.scroll.refresh()
+      },
       // 歌单列表中小图片加载完毕刷新高度
       minImgLoad() {
         this.$refs.scroll.refresh()
@@ -91,6 +101,8 @@
 
 <style scoped lang="less">
   #recommend {
+    position: relative;
+
     .scroll {
       height: calc(100vh - 88px);
 

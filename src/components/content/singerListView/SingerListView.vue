@@ -98,6 +98,7 @@
           if (position <= 0) {
             this.scrollCurrentIndex = 0
             this.$emit('nowIndex', 0)
+            return
           }
           // 2.中间情况
           else if (position >= height1 && position < height2) {
@@ -144,6 +145,10 @@
           }
         }
       },
+      // 3.刷新滚动高度
+      _refresh() {
+        this.$refs.cScroll.refresh()
+      },
     },
     watch: {
       // 1.当触摸的字母改变时滚动到相应元素
@@ -169,7 +174,7 @@
     overflow: hidden;
 
     .list-view-scroll {
-      height: calc(100vh - 88px);
+      height: 100%;
 
       .list-group {
         padding-bottom: 30px;

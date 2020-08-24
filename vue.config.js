@@ -37,6 +37,17 @@ module.exports = {
           '^/api/getSongUrl': '',
         },
       },
+      '/api/lyric': {
+        target: 'https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg',
+        changeOrigin: true,
+        bypass: function(req) {
+          req.headers.referer = 'https://y.qq.com/portal/player.html'
+          req.headers.origin = 'https://y.qq.com'
+        },
+        pathRewrite: {
+          '^/api/lyric': '',
+        },
+      },
     },
   },
 }

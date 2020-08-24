@@ -1,5 +1,5 @@
 <template>
-  <div id="singer">
+  <div id="singer" ref="singer">
     <!--歌手列表-->
     <singer-list-view
       ref="listView"
@@ -20,6 +20,7 @@
           :key="item"
           :data-index="index"
           :class="{ active: index === anchorIndex }"
+          @click.stop="letterClick(index)"
         >
           {{ item }}
         </li>
@@ -45,9 +46,13 @@
   // vuex
   import { mapMutations } from 'vuex'
 
+  // mixin
+  import { playlistMixin } from '@/common/mixin'
+
   const ANCHOR_HEIGHT = 18
 
   export default {
+    mixins: [playlistMixin],
     name: 'Singer',
     components: {
       SingerListView,
@@ -183,6 +188,17 @@
         this.$router.push(`/singer/${item.id}`)
         this.setSinger(item)
       },
+      // 5.某一个字母被点击跳转到相应分类歌手
+      letterClick(index) {
+        this.anchorIndex = index
+        this.singerListIndex = index
+      },
+      // 6.操作scroll,不让mini播放器遮盖
+      handlePlaylist(playlist) {
+        // 设置滚动组件的bottom为mini播放器的高度
+        this.$refs.singer.style.bottom = playlist.length > 0 ? '60px' : ''
+        this.$refs.listView._refresh()
+      },
 
       /**
        * vuex
@@ -200,6 +216,7 @@
     top: 88px;
     left: 0;
     right: 0;
+    bottom: 0;
     z-index: 2;
     overflow: hidden;
 
