@@ -47,12 +47,14 @@ function getRandomInt(min, max) {
 
 // 5.洗牌函数
 export function shuffle(arr) {
+  // 创建一个副本,不影响原数组
+  let _arr = arr.slice()
   // 从0到当前序号获取一个随机下标,交换该下标和当前i对应值
-  for (let i = 0; i < arr.length; i++) {
+  for (let i = 0; i < _arr.length; i++) {
     let j = getRandomInt(0, i)
-    let t = arr[i]
-    arr[i] = arr[j]
-    arr[j] = t
+    let t = _arr[i]
+    _arr[i] = _arr[j]
+    _arr[j] = t
   }
-  return arr
+  return _arr
 }

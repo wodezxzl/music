@@ -12,7 +12,12 @@
         <!--遮罩层-->
         <div class="filter" ref="filter"></div>
         <!--随机播放按钮-->
-        <div class="random-play" ref="randomPlay" v-show="songs.length">
+        <div
+          class="random-play"
+          ref="randomPlay"
+          v-show="songs.length"
+          @click="playRandomSong"
+        >
           <i class="icon-play"></i>
           <span>随机播放全部</span>
         </div>
@@ -82,7 +87,7 @@
       }
     },
     computed: {
-      ...mapGetters(['getCurrentIndex']),
+      ...mapGetters(['getCurrentIndex', 'isFullScreen']),
       bgImg() {
         return `background-image:url(${this.singerBgImage})`
       },
@@ -120,7 +125,7 @@
       /**
        * vuex
        */
-      ...mapActions(['selectSongPlay', 'isFullScreen']),
+      ...mapActions(['selectSongPlay', 'playRandomSong']),
 
       /**
        * 事件处理
@@ -157,6 +162,13 @@
               url,
             })
           }
+        })
+      },
+      // 4.随机播放歌曲
+      // TODO 有问题的,没有url
+      playRandomSong() {
+        this.playRandomSong({
+          list: this.songs,
         })
       },
 
