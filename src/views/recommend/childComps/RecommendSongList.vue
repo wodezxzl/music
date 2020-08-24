@@ -2,7 +2,12 @@
   <div v-if="songsList.length" class="recommend-song-list">
     <h2>热门歌单推荐</h2>
     <ul>
-      <li v-for="item in songsList" :key="item.dissid" class="list-item">
+      <li
+        v-for="item in songsList"
+        :key="item.dissid"
+        class="list-item"
+        @click="songItemClick(item)"
+      >
         <img v-lazy="item.imgurl" alt="" @load="minImgLoad"/>
         <div class="desc">
           <div class="title" v-html="item.creator.name"></div>
@@ -14,6 +19,9 @@
 </template>
 
 <script>
+  // vuex
+  import { mapMutations } from 'vuex'
+
   export default {
     name: 'RecommendSongList',
     props: {
@@ -30,6 +38,7 @@
       }
     },
     methods: {
+      ...mapMutations(['setRecommendSongList']),
       // 1.发射图片加载完毕事件
       minImgLoad() {
         // 只有当count等于数据长度时才发出一次事件,为了防抖
@@ -37,7 +46,14 @@
           this.$emit('minImgLoad')
         }
       },
-      // 2.图片点击进行路由跳转
+      // 2.歌单点击进行路由跳转
+      songItemClick(item) {
+        this.$router.push({
+          path: `/recommend/${item.dissid}`,
+        })
+        // 将歌单信息设置到vuex
+        this.setRecommendSongList(item)
+      },
     },
   }
 </script>

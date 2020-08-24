@@ -48,6 +48,19 @@ module.exports = {
           '^/api/lyric': '',
         },
       },
+      '/api/recommendSongUrl': {
+        target:
+          'https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg',
+        changeOrigin: true,
+        bypass: function(req) {
+          req.headers.referer =
+            'https://y.qq.com/n/yqq/playlist/7647706897.html'
+          req.headers.origin = 'https://y.qq.com'
+        },
+        pathRewrite: {
+          '^/api/recommendSongUrl': '',
+        },
+      },
     },
   },
 }

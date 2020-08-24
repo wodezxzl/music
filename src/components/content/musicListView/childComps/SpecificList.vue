@@ -7,7 +7,9 @@
         @click="songClick(item, index)"
       >
         <div class="song-name">{{ item.name }}</div>
-        <div class="singer-name">{{ item.singer + '·' + item.album }}</div>
+        <div class="singer-name">
+          {{ item.album + '·' + item.singer }}
+        </div>
       </li>
     </ul>
   </div>

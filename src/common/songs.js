@@ -56,13 +56,14 @@ export default class Song {
 // 创建歌曲类函数
 export function createSong(musicData) {
   return new Song({
-    id: musicData.songid,
-    mid: musicData.songmid,
+    id: musicData.songid || musicData.id,
+    mid: musicData.songmid || musicData.mid,
     singer: filterSinger(musicData.singer),
-    name: musicData.songname,
-    album: musicData.albumname,
+    name: musicData.songname || musicData.name,
+    album: musicData.albumname || musicData.album.name,
     duration: musicData.interval,
-    img: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${musicData.albummid}.jpg?max_age=2592000`,
+    img: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${musicData.albummid ||
+    musicData.album.mid}.jpg?max_age=2592000`,
     /*开始为空,当点击播放时谁才请求它歌曲地址*/
     url: null,
   })

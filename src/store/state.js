@@ -15,4 +15,6 @@ export const state = {
   mode: playMode.sequence,
   // 当前播放索引
   currentIndex: -1,
+  // 推荐页歌单
+  recommendSongList: {},
 }

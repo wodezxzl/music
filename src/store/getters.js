@@ -25,4 +25,7 @@ export const getters = {
       return state.playList[state.currentIndex]
     }
   },
+  getRecommendSongList(state) {
+    return state.recommendSongList
+  },
 }

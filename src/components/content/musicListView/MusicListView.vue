@@ -136,7 +136,7 @@
       },
       // 2.点击返回按钮,返回歌手页面
       backSinger() {
-        this.$router.replace('/singer')
+        this.$router.back()
       },
       // 3.点击歌曲,进入播放器页面
       // **同时加载对应歌曲的播放地址(用到时才加载不浪费资源)**
@@ -253,6 +253,7 @@
           left: 50%;
           transform: translateX(-50%);
           font-size: @font-size-large;
+          white-space: nowrap;
         }
       }
 

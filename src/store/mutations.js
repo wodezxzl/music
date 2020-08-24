@@ -31,4 +31,7 @@ export const mutations = {
   setCurrentIndex(state, index) {
     Vue.set(state, 'currentIndex', index)
   },
+  setRecommendSongList(state, songItems) {
+    Vue.set(state, 'recommendSongList', songItems)
+  },
 }

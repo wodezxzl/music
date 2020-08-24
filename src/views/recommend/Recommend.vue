@@ -17,6 +17,7 @@
         <loading/>
       </div>
     </vertical-scroll>
+    <router-view/>
   </div>
 </template>
 

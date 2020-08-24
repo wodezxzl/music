@@ -35,3 +35,33 @@ export function getSongsList() {
     params: data,
   })
 }
+
+// 3.获取推荐页歌单歌曲列表(没有播放地址)
+export function getRecommendSongsList(disstid) {
+  const url = '/api/recommendSongUrl'
+  const data = Object.assign(
+    {},
+    {
+      type: 1,
+      json: 1,
+      utf8: 1,
+      onlysong: 0,
+      new_format: 1,
+      disstid: `${disstid}`,
+      g_tk_new_20200303: 5381,
+      g_tk: 5381,
+      loginUin: 0,
+      hostUin: 0,
+      format: 'json',
+      inCharset: 'utf8',
+      outCharset: 'utf-8',
+      notice: 0,
+      platform: 'yqq.json',
+      needNewCode: 0,
+    },
+  )
+  return request({
+    url,
+    params: data,
+  })
+}
