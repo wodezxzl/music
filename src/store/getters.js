@@ -28,4 +28,7 @@ export const getters = {
   getRecommendSongList(state) {
     return state.recommendSongList
   },
+  getTopList(state) {
+    return state.topList
+  },
 }

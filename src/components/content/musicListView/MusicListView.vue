@@ -33,7 +33,7 @@
       :probeType="3"
       @scroll="scroll"
     >
-      <specific-list :songs="songs" @songClick="songClick" />
+      <specific-list :songs="songs" :rank="rank" @songClick="songClick"/>
     </vertical-scroll>
     <!--加载中图标-->
     <loading v-show="!songs.length" class="loading" />
@@ -74,6 +74,11 @@
         default() {
           return []
         },
+      },
+      // 4.是否有排行榜样式
+      rank: {
+        type: Boolean,
+        default: false,
       },
     },
     data() {

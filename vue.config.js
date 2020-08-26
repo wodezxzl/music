@@ -61,6 +61,28 @@ module.exports = {
           '^/api/recommendSongUrl': '',
         },
       },
+      '/api/getRank': {
+        target: 'https://u.y.qq.com/cgi-bin/musicu.fcg',
+        changeOrigin: true,
+        bypass: function(req) {
+          req.headers.referer = 'https://i.y.qq.com/n2/m?tab=toplist'
+          req.headers.origin = 'https://i.y.qq.com'
+        },
+        pathRewrite: {
+          '^/api/getRank': '',
+        },
+      },
+      /*'/api/getRankSong': {
+        target: 'https://c.y.qq.com/v8/fcg-bin/fcg_v8_toplist_cp.fcg',
+        changeOrigin: true,
+        bypass: function(req) {
+          req.headers.referer = 'https://i.y.qq.com/n/yqq/toplist/62.html'
+          req.headers.origin = 'https://i.y.qq.com'
+        },
+        pathRewrite: {
+          '^/api/getRankSong': '',
+        },
+      },*/
     },
   },
 }

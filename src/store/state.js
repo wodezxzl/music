@@ -17,4 +17,6 @@ export const state = {
   currentIndex: -1,
   // 推荐页歌单
   recommendSongList: {},
+  // 排行榜数据
+  topList: {},
 }

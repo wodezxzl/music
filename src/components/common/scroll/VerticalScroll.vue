@@ -31,7 +31,7 @@
       },
       refreshDelay: {
         type: Number,
-        default: 20,
+        default: 100,
       },
     },
     data() {

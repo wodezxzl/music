@@ -34,4 +34,7 @@ export const mutations = {
   setRecommendSongList(state, songItems) {
     Vue.set(state, 'recommendSongList', songItems)
   },
+  setTopList(state, topListSong) {
+    Vue.set(state, 'topList', topListSong)
+  },
 }
