@@ -72,17 +72,18 @@ module.exports = {
           '^/api/getRank': '',
         },
       },
-      /*'/api/getRankSong': {
-        target: 'https://c.y.qq.com/v8/fcg-bin/fcg_v8_toplist_cp.fcg',
+      '/api/search': {
+        target: 'https://c.y.qq.com/soso/fcgi-bin/search_for_qq_cp',
         changeOrigin: true,
         bypass: function(req) {
-          req.headers.referer = 'https://i.y.qq.com/n/yqq/toplist/62.html'
+          req.headers.referer =
+            'https://i.y.qq.com/n2/m/index.html?tab=recommend'
           req.headers.origin = 'https://i.y.qq.com'
         },
         pathRewrite: {
-          '^/api/getRankSong': '',
+          '^/api/search': '',
         },
-      },*/
+      },
     },
   },
 }

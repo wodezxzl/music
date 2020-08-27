@@ -37,4 +37,7 @@ export const mutations = {
   setTopList(state, topListSong) {
     Vue.set(state, 'topList', topListSong)
   },
+  setSearchHistory(state, history) {
+    Vue.set(state, 'searchHistory', history)
+  },
 }

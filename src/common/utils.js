@@ -2,7 +2,7 @@
 export function debounce(fn, delay = 200, callback) {
   let timer = null
   return function(...args) {
-    if (timer) clearInterval(timer)
+    if (timer) clearTimeout(timer)
     timer = setTimeout(() => {
       fn.apply(this, args)
       if (callback) callback()

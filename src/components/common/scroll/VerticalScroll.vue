@@ -33,6 +33,10 @@
         type: Number,
         default: 100,
       },
+      beforeScroll: {
+        type: Boolean,
+        default: false,
+      },
     },
     data() {
       return {
@@ -53,7 +57,12 @@
       }
       if (this.pullUpLoad) {
         this.scroll.on('pullingUp', () => {
-          this.$emit('getMoreGoods')
+          this.$emit('getMore')
+        })
+      }
+      if (this.beforeScroll) {
+        this.scroll.on('beforeScrollStart', () => {
+          this.$emit('startScroll')
         })
       }
     },
@@ -67,6 +76,9 @@
       },
       scrollToElement(el, time = 100) {
         this.scroll && this.scroll.scrollToElement(el, time)
+      },
+      finishPullUp() {
+        this.scroll && this.scroll.finishPullUp()
       },
     },
     watch: {

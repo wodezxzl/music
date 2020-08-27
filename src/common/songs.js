@@ -60,7 +60,8 @@ export function createSong(musicData) {
     mid: musicData.songmid || musicData.mid,
     singer: filterSinger(musicData.singer),
     name: musicData.songname || musicData.name,
-    album: musicData.albumname || musicData.album.name,
+    // 有的歌没有album用songname充数
+    album: musicData.albumname || musicData.songname || musicData.album.name,
     duration: musicData.interval,
     img: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${musicData.albummid ||
     musicData.album.mid}.jpg?max_age=2592000`,

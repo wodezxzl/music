@@ -1,4 +1,5 @@
 <template>
+  <!--歌曲列表为一首歌,此时是对象-->
   <div class="player" v-show="getPlayList.length > 0">
     <!--展开全屏播放器-->
     <transition

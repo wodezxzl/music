@@ -1,4 +1,5 @@
 import { playMode } from '@/common/utils'
+import { loadSearch } from '@/common/cache'
 
 export const state = {
   // 点击对应歌手,获得的歌手信息
@@ -19,4 +20,6 @@ export const state = {
   recommendSongList: {},
   // 排行榜数据
   topList: {},
+  // 搜索历史数据
+  searchHistory: loadSearch(),
 }

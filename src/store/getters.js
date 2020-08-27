@@ -31,4 +31,7 @@ export const getters = {
   getTopList(state) {
     return state.topList
   },
+  getSearchHistory(state) {
+    return state.searchHistory
+  },
 }
