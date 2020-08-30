@@ -84,6 +84,17 @@ module.exports = {
           '^/api/search': '',
         },
       },
+      '/api/swiper': {
+        target: 'https://u.y.qq.com/cgi-bin/musics.fcg',
+        changeOrigin: true,
+        bypass: function(req) {
+          req.headers.referer = 'https://y.qq.com/'
+          req.headers.origin = 'https://y.qq.com'
+        },
+        pathRewrite: {
+          '^/api/swiper': '',
+        },
+      },
     },
   },
 }

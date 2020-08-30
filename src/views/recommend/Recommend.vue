@@ -5,8 +5,8 @@
       <!--只有当有图片时才加载,此时的滚动距离一定是正确的-->
       <swiper v-if="sliderImgList.length" :sliderImgList="sliderImgList">
         <swiper-item v-for="item in sliderImgList" :key="item.id">
-          <a :href="item.linkUrl"
-          ><img :src="item.picUrl" alt="" @load="imgLoad"
+          <a href="#"
+          ><img :src="item" alt="" @load="imgLoad"
           /></a>
         </swiper-item>
       </swiper>
@@ -60,14 +60,20 @@
       // 1.轮播图图片
       _getRecommendSwiper() {
         getRecommendSwiper().then(res => {
-          if (res.code === ERR_OK) {
-            this.sliderImgList = res.data.slider
+          if (res.data.code === ERR_OK) {
+            const slideArr = res.data.focus.data.shelf.v_niche[0].v_card
+            let arr = []
+            for (const item of slideArr) {
+              arr.push(item.cover)
+            }
+            this.sliderImgList = arr
           }
         })
       },
       // 2.请求歌单列表
       _getSongsList() {
         getSongsList().then(res => {
+          console.log(res)
           if (res.data.code === ERR_OK) {
             this.songsList = res.data.data.list
           }
@@ -86,7 +92,7 @@
         this.$refs.recommend.style.bottom = playlist.length > 0 ? '60px' : ''
         this.$refs.scroll.refresh()
       },
-      // 歌单列表中小图片加载完毕刷新高度
+      // 5.歌单列表中小图片加载完毕刷新高度
       minImgLoad() {
         this.$refs.scroll.refresh()
       },
