@@ -1,6 +1,6 @@
 import { playMode } from '@/common/utils'
 import { shuffle } from '@/common/utils'
-import { saveSearch, deleteSearch, clearSearch } from '@/common/cache'
+import { saveSearch, deleteSearch, clearSearch, savePlay } from '@/common/cache'
 
 function findSameSong(list, song) {
   return list.findIndex(item => {
@@ -76,8 +76,8 @@ export const actions = {
       }
 
       commit('setPlayList', playList)
-      commit('setCurrentIndex', currentIndex)
       commit('setSequenceList', sequenceList)
+      commit('setCurrentIndex', currentIndex)
       commit('setPlaying', true)
       commit('setFullScreen', true)
     } else {
@@ -99,5 +99,39 @@ export const actions = {
   // 清空搜索历史
   clearSearchHistory({ commit }) {
     commit('setSearchHistory', clearSearch())
+  },
+  // 删除播放列表中的一首歌
+  deleteOne({ commit, state }, song) {
+    let playList = state.playList.slice()
+    let sequenceList = state.sequenceList.slice()
+    let currentIndex = state.currentIndex
+
+    let pIndex = findSameSong(playList, song)
+    playList.splice(pIndex, 1)
+    let sIndex = findSameSong(sequenceList, song)
+    sequenceList.splice(sIndex, 1)
+
+    if (currentIndex > pIndex || currentIndex === playList.length) {
+      currentIndex--
+      commit('setCurrentIndex', currentIndex)
+    }
+
+    commit('setPlayList', playList)
+    commit('setSequenceList', sequenceList)
+
+    // 删除完了歌曲就不会播放了
+    const playingState = playList.length > 0
+    commit('setPlaying', playingState)
+  },
+  // 清空播放列表
+  clearPlayList({ commit }) {
+    commit('setPlayList', [])
+    commit('setSequenceList', [])
+    commit('setCurrentIndex', -1)
+    commit('setPlaying', false)
+  },
+  // 保存播放历史
+  savePlayHistory({ commit }, song) {
+    commit('setPlayHistory', savePlay(song))
   },
 }

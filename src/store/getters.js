@@ -34,4 +34,7 @@ export const getters = {
   getSearchHistory(state) {
     return state.searchHistory
   },
+  getPlayHistory(state) {
+    return state.playHistory
+  },
 }

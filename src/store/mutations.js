@@ -40,4 +40,7 @@ export const mutations = {
   setSearchHistory(state, history) {
     Vue.set(state, 'searchHistory', history)
   },
+  setPlayHistory(state, history) {
+    Vue.set(state, 'playHistory', history)
+  },
 }

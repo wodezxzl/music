@@ -44,7 +44,7 @@
   import NoResult from '@/components/common/noResult/NoResult'
 
   // vuex
-  import { mapMutations, mapActions } from 'vuex'
+  import { mapMutations, mapActions, mapGetters } from 'vuex'
 
   // mixin
   import { playlistMixin } from '@/common/mixin'
@@ -72,6 +72,9 @@
         // 是否还有更多数据
         hasMore: true,
       }
+    },
+    computed: {
+      ...mapGetters(['isFullScreen']),
     },
     methods: {
       ...mapMutations(['setSinger']),
@@ -118,7 +121,9 @@
         this.$emit('blurInput')
       },
       handlePlaylist(playlist) {
-        this.$refs.cScroll.$el.style.bottom = playlist.length > 0 ? '60px' : ''
+        this.$refs.cScroll.$el.style.bottom =
+          // 应该在mini播放器情况下才计算
+          playlist.length > 0 && !this.isFullScreen ? '60px' : ''
         this.$refs.cScroll.refresh()
       },
 

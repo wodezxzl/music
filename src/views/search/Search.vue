@@ -49,21 +49,19 @@
   import { getHotKey } from '@/network/search'
   import { ERR_OK } from '@/network/config'
   // vuex
-  import { mapActions, mapGetters } from 'vuex'
+  import { mapActions } from 'vuex'
   // mixin
-  import { playlistMixin } from '@/common/mixin'
+  import { playlistMixin, searchMixin } from '@/common/mixin'
 
   export default {
-    mixins: [playlistMixin],
+    mixins: [playlistMixin, searchMixin],
     name: 'Search',
     data() {
       return {
         hotKey: [],
-        query: '',
       }
     },
     computed: {
-      ...mapGetters(['getSearchHistory']),
       shortcut() {
         // 通过热词和历史的改变来实时改变可滚动距离
         return this.hotKey.concat(this.getSearchHistory)
@@ -73,31 +71,9 @@
       this._getHotKey()
     },
     methods: {
-      ...mapActions([
-        'saveSearchHistory',
-        'deleteSearchHistory',
-        'clearSearchHistory',
-      ]),
+      ...mapActions(['clearSearchHistory', 'deleteSearchHistory']),
       // 事件处理
-      // 1.点击热词添加到搜索框
-      addQuery(query) {
-        this.$refs.searchBox.changeQuery(query)
-        // 并添加历史
-        this.saveSearch(query)
-      },
-      // 2.搜索框中query发生改变,保存最新query
-      getNewQuery(newQuery) {
-        this.query = newQuery
-      },
-      // 3.搜索列表滚动后取消搜索框的焦点,使得移动端输入键盘消失
-      blurInput() {
-        this.$refs.searchBox._blur()
-      },
-      // 4.搜索的歌曲被点击,将其加入历史列表
-      saveSearch(name) {
-        this.saveSearchHistory(name)
-      },
-      // 5.显示confirm
+      // 1.显示confirm
       showConfirm() {
         this.$refs.confirm.show()
       },

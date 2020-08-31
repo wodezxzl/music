@@ -1,14 +1,14 @@
 <template>
   <transition name="confirm-fade">
-    <div class="confirm" v-show="isShow" @click="hide">
+    <div class="confirm" v-show="isShow" @click.stop="hide">
       <div class="confirm-wrapper">
         <div class="confirm-content">
           <p class="text">{{ text }}</p>
           <div class="operate">
-            <div class="operate-btn left" @click="clearHistory">
+            <div class="operate-btn left" @click.stop="clearHistory">
               {{ confirmBtnText }}
             </div>
-            <div class="operate-btn" @click="hide">
+            <div class="operate-btn" @click.stop="hide">
               {{ cancelBtnText }}
             </div>
           </div>

@@ -6,7 +6,7 @@
         <i class="icon-clear"></i>
       </div>
     </div>
-    <ul>
+    <transition-group name="list" tag="ul">
       <li
         v-for="(item, index) in getSearchHistory"
         :key="index"
@@ -17,7 +17,7 @@
           <i class="icon-delete"></i>
         </div>
       </li>
-    </ul>
+    </transition-group>
   </div>
 </template>
 
@@ -94,5 +94,16 @@
         }
       }
     }
+  }
+
+  /*删除动画*/
+  .list-enter-active,
+  .list-leave-active {
+    transition: all 0.3s;
+  }
+
+  .list-enter,
+  .list-leave-to {
+    height: 0;
   }
 </style>

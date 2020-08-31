@@ -101,7 +101,7 @@
     <!--缩小小播放器-->
     <transition name="mini">
       <div class="mini-player" v-show="!isFullScreen" @click="openFullScreen">
-        <!--右边缩略图-->
+        <!--左边缩略图-->
         <div class="left-desc" v-if="getCurrentSong">
           <img :src="getCurrentSong.img" :class="cdCls" alt="" />
           <div class="desc">
@@ -110,7 +110,7 @@
           </div>
         </div>
 
-        <!--左边按钮-->
+        <!--右边按钮-->
         <div class="right-button">
           <!--圆形播放进度条-->
           <progress-circle :radius="radius" :percent="percent">
@@ -121,7 +121,7 @@
               :class="playMiniIcon"
             ></i>
           </progress-circle>
-          <i class="icon-playlist"></i>
+          <i class="icon-playlist" @click.stop="showPlayList"></i>
         </div>
       </div>
     </transition>
@@ -136,6 +136,8 @@
         @ended="songEnd"
       />
     </div>
+    <!--playlist组件-->
+    <play-list ref="playList"/>
   </div>
 </template>
 
@@ -144,22 +146,26 @@
   import ProgressBar from './ProgressBar'
   import ProgressCircle from './ProgressCircle'
   import VerticalScroll from '@/components/common/scroll/VerticalScroll'
+  import PlayList from '@/components/content/player/PlayList'
 
   // 公共资源
   import animations from 'create-keyframe-animation'
   import { formatTime } from '@/common/utils'
   import { playMode } from '@/common/utils'
-  import { shuffle } from '@/common/utils'
   import { prefixStyle } from '@/common/dom'
   import LyricParser from 'lyric-parser'
 
   // vuex
-  import { mapGetters, mapMutations } from 'vuex'
+  import { mapGetters, mapMutations, mapActions } from 'vuex'
+
+  // mixin
+  import { playerMixin } from '@/common/mixin'
 
   const transform = prefixStyle('transform')
   const transitionDuration = prefixStyle('transitionDuration')
 
   export default {
+    mixins: [playerMixin],
     name: 'Player',
     data() {
       return {
@@ -173,15 +179,7 @@
       }
     },
     computed: {
-      ...mapGetters([
-        'isPlaying',
-        'isFullScreen',
-        'getCurrentSong',
-        'getPlayList',
-        'getCurrentIndex',
-        'getMode',
-        'getSequenceList',
-      ]),
+      ...mapGetters(['isPlaying', 'isFullScreen', 'getCurrentIndex']),
       // 0.切换歌曲的得到的新url
       // **直接判断getCurrentSong的变化来播放歌曲不行(在上一首下一首时)
       newUrl() {
@@ -226,14 +224,6 @@
           ? this.currentTime / this.getCurrentSong.duration
           : 0
       },
-      // 9.播放模式
-      iconMode() {
-        return this.getMode === playMode.sequence
-          ? 'icon-sequence'
-          : this.getMode === playMode.loop
-            ? 'icon-loop'
-            : 'icon-random'
-      },
     },
     created() {
       this.touch = {}
@@ -242,13 +232,8 @@
       /**
        *vuex
        */
-      ...mapMutations([
-        'setFullScreen',
-        'setPlaying',
-        'setCurrentIndex',
-        'setMode',
-        'setPlayList',
-      ]),
+      ...mapMutations(['setFullScreen']),
+      ...mapActions(['savePlayHistory']),
 
       /**
        * 事件处理
@@ -305,6 +290,8 @@
       // 6.audio可以播放时触发该canplay事件
       ready() {
         this.songReady = true
+        // 保存播放歌曲到vuex和本地
+        this.savePlayHistory(this.getCurrentSong)
       },
       // 7.歌曲播放失败触发函数
       error() {
@@ -329,24 +316,7 @@
           this.currentLyric.seek(currentTime * 1000)
         }
       },
-      // 10.改变播放模式和修改播放列表
-      changeMode() {
-        let mode = this.getMode < 2 ? this.getMode + 1 : 0
-        this.setMode(mode)
-        let list = null
-        if (mode === playMode.random) {
-          list = shuffle(this.getSequenceList)
-        } else {
-          // 顺序播放和循环播放,列表不变
-          list = this.getSequenceList
-        }
-        // 为了保证切换模式时当前播放歌曲不变,先将当前歌曲在新列表中的位置重置
-        // 当下一步改变新列表后当前播放歌曲不会变化
-        this._resetCurrentSong(list)
-        // 设置当前播放列表
-        this.setPlayList(list)
-      },
-      // 11.歌曲播放完毕触发函数
+      // 10.歌曲播放完毕触发函数
       songEnd() {
         if (this.getMode === playMode.loop) {
           // 播放完毕,单曲循环时执行loop函数
@@ -356,14 +326,14 @@
           this.next()
         }
       },
-      // 12.手指触摸中间区域
+      // 11.手指触摸中间区域
       middleTouchStart(e) {
         this.touch.initiated = true
         const touch = e.touches[0]
         this.touch.startX = touch.pageX
         this.touch.startY = touch.pageY
       },
-      // 13.手指在中间区域移动
+      // 12.手指在中间区域移动
       middleTouchMove(e) {
         if (!this.touch.initiated) return
         const touch = e.touches[0]
@@ -388,7 +358,7 @@
         // 让唱片逐渐消失
         this.$refs.middleLeft.style.opacity = 1 - this.touch.percent
       },
-      // 14.手指离开中间区域
+      // 13.手指离开中间区域
       middleTouchEnd() {
         let offsetWidth
         let opacity
@@ -424,6 +394,10 @@
         this.$refs.middleLeft.style.opacity = opacity
         this.$refs.middleLeft.style[transitionDuration] = `${time}ms`
       },
+      // 14.在mini播放器模式下点击显示playlist
+      showPlayList() {
+        this.$refs.playList._show()
+      },
 
       /**
        *私有方法
@@ -444,14 +418,7 @@
           scale,
         }
       },
-      // 2.重置当前播放歌曲
-      _resetCurrentSong(list) {
-        let index = list.findIndex(item => {
-          return item.id === this.getCurrentSong.id
-        })
-        this.setCurrentIndex(index)
-      },
-      // 3.歌曲循环播放实现
+      // 2.歌曲循环播放实现
       _loop() {
         this.$refs.audio.currentTime = 0
         this.$refs.audio.play()
@@ -460,7 +427,7 @@
           this.currentLyric.seek(0)
         }
       },
-      // 4.获取歌词并处理
+      // 3.获取歌词并处理
       _parserLyric() {
         this.getCurrentSong
           .getLyric()
@@ -478,7 +445,7 @@
             this.currentLineNum = 0
           })
       },
-      // 5.每一行歌词改变时的回调函数
+      // 4.每一行歌词改变时的回调函数
       _handleLyric({ lineNum, txt }) {
         this.currentLineNum = lineNum
         if (lineNum > 5) {
@@ -547,6 +514,8 @@
     watch: {
       // **1.当getCurrentIndex变化时才请求歌曲url
       getCurrentIndex() {
+        // 歌曲列表中没有歌曲时,直接返回
+        if (!this.getCurrentSong) return
         // 切换歌曲时需要先停止上一个歌曲歌词
         if (this.currentLyric) {
           this.currentLyric.stop()
@@ -557,11 +526,13 @@
         this._parserLyric()
       },
       // 2.getCurrentSong变化时说明有值了,可以播放了,调用audio的方法来播放音乐
-      newUrl(newValue) {
+      newUrl(newValue, old) {
         // TODO $nextTick的作用还不是很了解
         // setTimeout是为了保证当歌曲从后台切换到前台时还能播放
         setTimeout(() => {
-          newValue ? this.$refs.audio.play() : ''
+          newValue && newValue !== old && this.isPlaying
+            ? this.$refs.audio.play()
+            : ''
         }, 1000)
       },
       // 3.记录播放状态的数据变化,改变播放状态
@@ -578,6 +549,7 @@
       ProgressBar,
       ProgressCircle,
       VerticalScroll,
+      PlayList,
     },
   }
 </script>
