@@ -73,7 +73,6 @@
       // 2.请求歌单列表
       _getSongsList() {
         getSongsList().then(res => {
-          console.log(res)
           if (res.data.code === ERR_OK) {
             this.songsList = res.data.data.list
           }

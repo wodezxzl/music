@@ -44,6 +44,7 @@ export const playerMixin = {
       'getPlayList',
       'getMode',
       'getSequenceList',
+      'getFavoriteList',
     ]),
     iconMode() {
       return this.getMode === playMode.sequence
@@ -60,6 +61,7 @@ export const playerMixin = {
       'setMode',
       'setPlayList',
     ]),
+    ...mapActions(['saveFavoriteList', 'deleteFavoriteList']),
     // 改变播放模式和修改播放列表
     changeMode() {
       let mode = this.getMode < 2 ? this.getMode + 1 : 0
@@ -83,6 +85,27 @@ export const playerMixin = {
         return item.id === this.getCurrentSong.id
       })
       this.setCurrentIndex(index)
+    },
+    // 设置当前收藏图标的样式
+    getFavoriteIcon(song) {
+      if (this.isFavorite(song)) {
+        return 'icon-favorite'
+      } else {
+        return 'icon-not-favorite'
+      }
+    },
+    // 切换是否收藏歌曲
+    toggleFavorite(song) {
+      if (this.isFavorite(song)) {
+        this.deleteFavoriteList(song)
+      } else {
+        this.saveFavoriteList(song)
+      }
+    },
+    isFavorite(song) {
+      if (!song) return
+      const index = this.getFavoriteList.findIndex(item => item.id === song.id)
+      return index > -1
     },
   },
 }

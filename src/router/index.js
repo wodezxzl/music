@@ -9,6 +9,7 @@ const SingerDetail = () => import('../views/singer/childComps/SingerDetail')
 const RecommendSongDetail = () =>
   import('../views/recommend/childComps/RecommendSongDetail')
 const RankDetail = () => import('../views/rank/childComps/RankDetail')
+const User = () => import('../components/content/user/User')
 
 Vue.use(VueRouter)
 
@@ -56,6 +57,10 @@ const routes = [
         component: SingerDetail,
       },
     ],
+  },
+  {
+    path: '/user',
+    component: User,
   },
 ]
 

@@ -34,7 +34,10 @@
               >
                 <i class="icon" :class="_getCurrentClass(item)"></i>
                 <span class="song-name">{{ item.name }}</span>
-                <i class="icon-not-favorite"></i>
+                <i
+                  :class="getFavoriteIcon(item)"
+                  @click.stop="toggleFavorite(item)"
+                ></i>
                 <i class="icon-delete" @click.stop="deleteSong(item)"></i>
               </li>
             </transition-group>

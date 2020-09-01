@@ -93,7 +93,10 @@
             <i class="icon-prev" :class="disableCls" @click="prev"></i>
             <i :class="[playIcon, disableCls]" @click="togglePlaying"></i>
             <i class="icon-next" :class="disableCls" @click="next"></i>
-            <i class="icon-not-favorite"></i>
+            <i
+              :class="getFavoriteIcon(getCurrentSong)"
+              @click="toggleFavorite(getCurrentSong)"
+            ></i>
           </div>
         </div>
       </div>
@@ -278,6 +281,8 @@
         // 只有一首歌曲就是单曲循环
         if (this.getPlayList.length === 1) {
           this._loop()
+          // 只有一首歌时不需要设置songReady,直接返回
+          return
         } else {
           let index = this.getCurrentIndex + 1
           if (index === this.getCurrentIndex.length) {

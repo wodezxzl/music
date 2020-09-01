@@ -6,6 +6,12 @@
         <span class="icon"></span>
         <span class="title">Chicken Music</span>
       </template>
+      <!--跳转到用户中心的路由-->
+      <template v-slot:right>
+        <router-link to="/user">
+          <i class="icon-mine"></i>
+        </router-link>
+      </template>
     </nav-bar>
     <!--功能选项切换区-->
     <tab-bar class="app-tab-bar" />
@@ -52,6 +58,10 @@
 
       .title {
         font-size: 18px;
+        color: @color-theme;
+      }
+
+      .icon-mine {
         color: @color-theme;
       }
     }

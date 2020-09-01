@@ -1,6 +1,13 @@
 import { playMode } from '@/common/utils'
 import { shuffle } from '@/common/utils'
-import { saveSearch, deleteSearch, clearSearch, savePlay } from '@/common/cache'
+import {
+  saveSearch,
+  deleteSearch,
+  clearSearch,
+  savePlay,
+  saveFavorite,
+  deleteFavorite,
+} from '@/common/cache'
 
 function findSameSong(list, song) {
   return list.findIndex(item => {
@@ -133,5 +140,13 @@ export const actions = {
   // 保存播放历史
   savePlayHistory({ commit }, song) {
     commit('setPlayHistory', savePlay(song))
+  },
+  // 保存收藏歌曲到列表
+  saveFavoriteList({ commit }, song) {
+    commit('setFavoriteList', saveFavorite(song))
+  },
+  // 删除收藏列表歌曲
+  deleteFavoriteList({ commit }, song) {
+    commit('setFavoriteList', deleteFavorite(song))
   },
 }

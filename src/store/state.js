@@ -1,5 +1,5 @@
 import { playMode } from '@/common/utils'
-import { loadSearch, readPlay } from '@/common/cache'
+import { loadSearch, readPlay, readFavorite } from '@/common/cache'
 
 export const state = {
   // 点击对应歌手,获得的歌手信息
@@ -24,4 +24,6 @@ export const state = {
   searchHistory: loadSearch(),
   // 播放历史
   playHistory: readPlay(),
+  // 收藏的歌曲列表
+  favoriteList: readFavorite(),
 }

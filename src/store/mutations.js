@@ -43,4 +43,7 @@ export const mutations = {
   setPlayHistory(state, history) {
     Vue.set(state, 'playHistory', history)
   },
+  setFavoriteList(state, list) {
+    Vue.set(state, 'favoriteList', list)
+  },
 }

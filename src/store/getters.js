@@ -37,4 +37,7 @@ export const getters = {
   getPlayHistory(state) {
     return state.playHistory
   },
+  getFavoriteList(state) {
+    return state.favoriteList
+  },
 }
