@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <!--顶栏图标标题区-->
-    <nav-bar class="app-nav-bar">
+    <nav-bar class="app-nav-bar ignore">
       <template v-slot:center>
         <span class="icon"></span>
         <span class="title">Chicken Music</span>
@@ -70,7 +70,7 @@
     .app-nav-bar {
       position: relative;
       background-color: #000;
-      z-index: 1;
+      z-index: 999;
     }
   }
 </style>

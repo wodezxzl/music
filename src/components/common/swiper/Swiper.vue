@@ -84,9 +84,12 @@
     overflow: hidden;
     .dots {
       position: absolute;
-      left: 50%;
+      display: inline-block;
+      width: 100%;
+      text-align: center;
+      /*left: 50%;*/
       bottom: 10px;
-      transform: translateX(-50%);
+      /*transform: translateX(-50%);*/
       span {
         display: inline-block;
         width: 10px;

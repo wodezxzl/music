@@ -37,7 +37,7 @@
               <!--**这里用v-show会报错**-->
               <div class="cd" v-if="getCurrentSong" ref="cdWrapper">
                 <!--这个cdCls中的动画不能和父级动画放在一起-->
-                <img :src="getCurrentSong.img" :class="cdCls" alt=""/>
+                <img :src="getCurrentSong.img" :class="cdCls" alt="" />
               </div>
             </div>
             <!--当前正在播放的歌词-->
@@ -83,7 +83,7 @@
           <div class="progress-wrapper">
             <span class="time time-l">{{ songPlayedTime }}</span>
             <div class="progress-bar-wrapper">
-              <progress-bar :percent="percent" @percentChange="percentChange"/>
+              <progress-bar :percent="percent" @percentChange="percentChange" />
             </div>
             <span class="time time-r">{{ songTotalTime }}</span>
           </div>
@@ -140,7 +140,7 @@
       />
     </div>
     <!--playlist组件-->
-    <play-list ref="playList"/>
+    <play-list ref="playList" />
   </div>
 </template>
 
@@ -359,7 +359,7 @@
         // 改变歌词的位置
         this.$refs.lyricList.$el.style[
           transform
-          ] = `translate3d(${offsetWidth}px, 0, 0)`
+        ] = `translate3d(${offsetWidth}px, 0, 0)`
         // 让唱片逐渐消失
         this.$refs.middleLeft.style.opacity = 1 - this.touch.percent
       },
@@ -391,7 +391,7 @@
         }
         this.$refs.lyricList.$el.style[
           transform
-          ] = `translate3d(${offsetWidth}px, 0, 0)`
+        ] = `translate3d(${offsetWidth}px, 0, 0)`
         // 歌词移动的过渡时间
         const time = 300
         this.$refs.lyricList.$el.style[transitionDuration] = `${time}ms`

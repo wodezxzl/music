@@ -21,8 +21,6 @@
     font-size: 20px;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     color: #fff;
-    background-color: var(--color-tint);
-    /*z-index: 999;*/
     .left {
       width: 60px;
     }

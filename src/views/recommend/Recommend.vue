@@ -5,19 +5,21 @@
       <!--只有当有图片时才加载,此时的滚动距离一定是正确的-->
       <swiper v-if="sliderImgList.length" :sliderImgList="sliderImgList">
         <swiper-item v-for="item in sliderImgList" :key="item.id">
-          <a href="#"
-          ><img :src="item" alt="" @load="imgLoad"
-          /></a>
+          <a href="#"><img :src="item" alt="" @load="imgLoad"/></a>
         </swiper-item>
       </swiper>
       <!--推荐歌单-->
-      <recommend-song-list :songsList="songsList" @minImgLoad="minImgLoad"/>
+      <recommend-song-list
+        v-if="songsList.length"
+        :songsList="songsList"
+        @minImgLoad="minImgLoad"
+      />
       <!--正在加载-->
       <div v-show="!songsList.length" class="loading">
-        <loading/>
+        <loading />
       </div>
     </vertical-scroll>
-    <router-view/>
+    <router-view />
   </div>
 </template>
 

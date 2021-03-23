@@ -31,6 +31,7 @@
         momentum: false,
         bounce: false,
         stopPropagation: true,
+        // 为了监听slideWillChange事件，实时知道当前在那个页面
         probeType: 2,
         click: true,
       })

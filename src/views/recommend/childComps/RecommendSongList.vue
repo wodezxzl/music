@@ -1,5 +1,5 @@
 <template>
-  <div v-if="songsList.length" class="recommend-song-list">
+  <div class="recommend-song-list">
     <h2>热门歌单推荐</h2>
     <ul>
       <li
@@ -8,7 +8,7 @@
         class="list-item"
         @click="songItemClick(item)"
       >
-        <img v-lazy="item.imgurl" alt="" @load="minImgLoad"/>
+        <img v-lazy="item.imgurl" alt="" @load="minImgLoad" />
         <div class="desc">
           <div class="title" v-html="item.creator.name"></div>
           <div class="detail-desc" v-html="item.dissname"></div>
